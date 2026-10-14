@@ -1,37 +1,73 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 using namespace std;
 
 int main() {
-    int courses;
-    float grade, credit;
-    float totalCredits = 0;
-    float totalPoints = 0;
-    float gpa;
+    int choice;
 
-    cout << "Enter number of courses: ";
-    cin >> courses;
+    string username, password;
+    string savedUsername, savedPassword;
 
-    for (int i = 1; i <= courses; i++) {
-        cout << "Enter grade for course " << i << ": ";
-        cin >> grade;
+    cout << "1. Register" << endl;
+    cout << "2. Login" << endl;
+    cout << "Choose an option: ";
+    cin >> choice;
 
-        cout << "Enter credit hours for course " << i << ": ";
-        cin >> credit;
+    if (choice == 1) {
+        cout << "Enter a username: ";
+        cin >> username;
 
-        totalCredits = totalCredits + credit;
-        totalPoints = totalPoints + (grade * credit);
+        cout << "Enter a password: ";
+        cin >> password;
+
+        ifstream checkFile("user.txt");
+
+        if (checkFile >> savedUsername >> savedPassword) {
+            if (username == savedUsername) {
+                cout << "Username already exists!" << endl;
+                checkFile.close();
+                return 0;
+            }
+        }
+
+        checkFile.close();
+
+        ofstream file("user.txt");
+
+        file << username << " " << password;
+
+        file.close();
+
+        cout << "Registration successful!" << endl;
     }
+    else if (choice == 2) {
+        cout << "Enter your username: ";
+        cin >> username;
 
-    if (totalCredits > 0) {
-        gpa = totalPoints / totalCredits;
+        cout << "Enter your password: ";
+        cin >> password;
 
-        cout << endl;
-        cout << "Total Credits: " << totalCredits << endl;
-        cout << "Total Grade Points: " << totalPoints << endl;
-        cout << "Your GPA/CGPA is: " << gpa << endl;
+        ifstream file("user.txt");
+
+        if (file >> savedUsername >> savedPassword) {
+            if (username == savedUsername &&
+                password == savedPassword) {
+
+                cout << "Login successful!" << endl;
+            }
+            else {
+                cout << "Incorrect username or password!" << endl;
+            }
+        }
+        else {
+            cout << "No registered user found!" << endl;
+        }
+
+        file.close();
     }
     else {
-        cout << "Invalid total credit hours." << endl;
+        cout << "Invalid choice!" << endl;
     }
 
     return 0;
